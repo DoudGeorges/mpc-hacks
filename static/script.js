@@ -38,9 +38,9 @@ async function parseJsonResponse(res) {
     }
     const text = await res.text();
     if (/^\s*</.test(text)) {
-        if (res.status === 401) throw new Error('Session expired ? please sign in again.');
+        if (res.status === 401) throw new Error('Session expired â€” please sign in again.');
         if (res.status === 403) throw new Error('You do not have permission to view this data.');
-        if (res.status === 404) throw new Error('API not found ? restart the app with python app.py.');
+        if (res.status === 404) throw new Error('API not found â€” restart the app with python app.py.');
         throw new Error(`Server error (${res.status}). Restart the app and try again.`);
     }
     throw new Error(text.slice(0, 160) || `Request failed (${res.status})`);
@@ -109,7 +109,7 @@ function renderDepartmentList(departments, containerId) {
     el.innerHTML = (departments || []).map((d) => `
         <div class="guardian-item">
             <strong>${escapeHtml(d.department)}</strong>
-            <div>${escapeHtml(d.total_spent_fmt)} · ${d.transaction_count} txns · ${d.flagged_transactions} flagged</div>
+            <div>${escapeHtml(d.total_spent_fmt)} Â· ${d.transaction_count} txns Â· ${d.flagged_transactions} flagged</div>
             <div class="guardian-item-meta">Avg score ${Number(d.average_score).toFixed(1)}</div>
         </div>`).join('');
 }
@@ -161,7 +161,7 @@ function renderFlaggedTransactions(items, containerId = 'alerts-list') {
                         <td>${escapeHtml(f.vendor)}</td>
                         <td><strong>${escapeHtml(f.amount)}</strong></td>
                         <td>${escapeHtml(f.date)}</td>
-                        <td><small>${escapeHtml(f.reason)}${f.flag_type ? ` · ${escapeHtml(f.flag_type.replace(/_/g, ' '))}` : ''}</small></td>
+                        <td><small>${escapeHtml(f.reason)}${f.flag_type ? ` Â· ${escapeHtml(f.flag_type.replace(/_/g, ' '))}` : ''}</small></td>
                     </tr>`).join('')}
             </tbody>
         </table>`;
@@ -176,9 +176,9 @@ function renderOffenders(items) {
     }
     el.innerHTML = items.map((o, i) => `
         <div class="guardian-item">
-            <strong>#${i + 1} ${escapeHtml(o.employee)} · ${escapeHtml(o.department)}</strong>
-            <div>${o.violations} violation(s) · ${o.severe} high/severe${o.split_purchases ? ` · ${o.split_purchases} split` : ''}</div>
-            <div class="guardian-item-meta">Score ${Number(o.credit_score).toFixed(1)} · CA$${Number(o.total_amount).toLocaleString(undefined, { maximumFractionDigits: 0 })} flagged</div>
+            <strong>#${i + 1} ${escapeHtml(o.employee)} Â· ${escapeHtml(o.department)}</strong>
+            <div>${o.violations} violation(s) Â· ${o.severe} high/severe${o.split_purchases ? ` Â· ${o.split_purchases} split` : ''}</div>
+            <div class="guardian-item-meta">Score ${Number(o.credit_score).toFixed(1)} Â· CA$${Number(o.total_amount).toLocaleString(undefined, { maximumFractionDigits: 0 })} flagged</div>
         </div>`).join('');
 }
 
@@ -409,7 +409,7 @@ function renderBudgetSettingsEditor(data) {
     const listEl = document.getElementById('settings-budget-list');
     const quarterEl = document.getElementById('settings-budget-quarter');
     if (quarterEl && data?.quarter) {
-        quarterEl.textContent = `${data.quarter} ? set how much each department can spend (suggested amounts shown as hints)`;
+        quarterEl.textContent = `${data.quarter} â€” set how much each department can spend (suggested amounts shown as hints)`;
     }
     if (!listEl) return;
     const rows = data?.departments || [];
@@ -429,7 +429,7 @@ function renderBudgetSettingsEditor(data) {
                     data-dept-input="${escapeHtml(d.department)}"
                     value="${Number(d.budget)}"
                     placeholder="${Number(d.auto_budget)}">
-                <small>Suggested: ${escapeHtml(d.auto_budget_fmt)}${d.budget_source_quarter && d.budget_source_quarter !== data.quarter ? ` ? Using saved ${escapeHtml(d.budget_source_quarter)} cap` : ''}</small>
+                <small>Suggested: ${escapeHtml(d.auto_budget_fmt)}${d.budget_source_quarter && d.budget_source_quarter !== data.quarter ? ` Â· Using saved ${escapeHtml(d.budget_source_quarter)} cap` : ''}</small>
             </label>
         </div>`).join('');
 }
@@ -448,7 +448,7 @@ async function saveBudgetSettings() {
     const status = document.getElementById('budget-save-status');
     const btn = document.getElementById('budget-save-btn');
     if (!settingsBudgetData?.quarter) return;
-    if (status) status.textContent = 'Saving?';
+    if (status) status.textContent = 'Savingâ€¦';
     if (btn) btn.disabled = true;
     try {
         const res = await fetch('/api/settings/budgets', {
@@ -465,7 +465,7 @@ async function saveBudgetSettings() {
         budgetLoaded = false;
         budgetPayload = null;
         budgetStale = true;
-        if (status) status.textContent = 'Saved ? open Budgets to see updates';
+        if (status) status.textContent = 'Saved â€” open Budgets to see updates';
         refreshNavBadges();
         if (currentViewKey === 'budget') {
             await loadBudget(true);
@@ -485,7 +485,7 @@ function resetBudgetSettingsForm() {
         if (row) input.value = String(row.auto_budget);
     });
     const status = document.getElementById('budget-save-status');
-    if (status) status.textContent = 'Reset ? suggested ? click Save budgets to apply';
+    if (status) status.textContent = 'Reset â€” suggested â€” click Save budgets to apply';
 }
 
 async function loadSettings(force = false, tab = 'budgets') {
@@ -495,7 +495,7 @@ async function loadSettings(force = false, tab = 'budgets') {
     }
     switchSettingsTab(tab);
     const listEl = document.getElementById('settings-budget-list');
-    if (listEl) listEl.innerHTML = '<div class="guardian-item">Loading?</div>';
+    if (listEl) listEl.innerHTML = '<div class="guardian-item">Loadingâ€¦</div>';
     try {
         const [budgetRes, policyRes] = await Promise.all([
             fetch('/api/settings/budgets'),
@@ -533,7 +533,7 @@ function switchPolicyEditorTab(tab) {
 async function savePolicyEditor() {
     const status = document.getElementById('policy-save-status');
     const btn = document.getElementById('policy-save-btn');
-    if (status) status.textContent = 'Saving?';
+    if (status) status.textContent = 'Savingâ€¦';
     if (btn) btn.disabled = true;
     try {
         const rules = collectPolicyFormRules();
@@ -545,7 +545,7 @@ async function savePolicyEditor() {
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Save failed');
-        if (status) status.textContent = 'Saved ? updating scans?';
+        if (status) status.textContent = 'Saved â€” updating scansâ€¦';
         flagsLoaded = false;
         budgetLoaded = false;
         budgetPayload = null;
@@ -620,7 +620,7 @@ function renderOverviewStats(totals, containerId = 'dashboard-stats', personal =
 }
 
 function formatCreditScore(score) {
-    if (score == null || Number.isNaN(Number(score))) return '?';
+    if (score == null || Number.isNaN(Number(score))) return 'â€”';
     const n = Number(score);
     return Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
 }
@@ -653,7 +653,7 @@ function moneyTick(v) {
 }
 
 function projectOptionLabel(p) {
-    return `${p.title} · ${p.spent_fmt || formatCad(0)} spent of ${p.requested_amount_fmt} budget`;
+    return `${p.title} Â· ${p.spent_fmt || formatCad(0)} spent of ${p.requested_amount_fmt} budget`;
 }
 
 function buildChartConfig(chart) {
@@ -820,7 +820,7 @@ function fillProjectSelect(select, projects, emptyEl) {
     }
     emptyEl?.setAttribute('hidden', '');
     select.disabled = false;
-    select.innerHTML = `<option value="">Select a project?</option>${projects.map((p) =>
+    select.innerHTML = `<option value="">Select a projectâ€¦</option>${projects.map((p) =>
         `<option value="${p.id}">${escapeHtml(projectOptionLabel(p))}</option>`
     ).join('')}`;
 }
@@ -837,7 +837,7 @@ function updateReceiptProjectHint(select, hintEl, projects) {
         hintEl.textContent = '';
         return;
     }
-    hintEl.textContent = `${project.spent_fmt} spent on this project · ${project.remaining_fmt} left of ${project.requested_amount_fmt} budget`;
+    hintEl.textContent = `${project.spent_fmt} spent on this project Â· ${project.remaining_fmt} left of ${project.requested_amount_fmt} budget`;
 }
 
 function syncReceiptsFormPurpose() {
@@ -878,9 +878,9 @@ async function createReceiptCard(data) {
     const matchClass = data.matched_transaction_id ? 'receipt-match--ok' : 'receipt-match--info';
     const matchText = data.matched_transaction_id
         ? 'Matched to card transaction'
-        : 'No card transaction matched ? you can still save this receipt';
+        : 'No card transaction matched â€” you can still save this receipt';
     const projectOptions = projects.length
-        ? `<option value="">Select a project?</option>${projects.map((p) =>
+        ? `<option value="">Select a projectâ€¦</option>${projects.map((p) =>
             `<option value="${p.id}">${escapeHtml(projectOptionLabel(p))}</option>`
         ).join('')}`
         : '<option value="">No approved projects</option>';
@@ -972,7 +972,7 @@ async function createReceiptCard(data) {
             project_id: purpose === 'project' ? projectId : null,
         };
         if (btn) btn.disabled = true;
-        if (statusEl) statusEl.textContent = 'Saving?';
+        if (statusEl) statusEl.textContent = 'Savingâ€¦';
         try {
             const res = await fetch('/api/receipts/confirm', {
                 method: 'POST',
@@ -1045,14 +1045,14 @@ function renderAttachmentPreview() {
             <div class="attachment-file-icon"><i class="fa-solid fa-file-pdf"></i></div>
             <div class="attachment-chip-info">
                 <strong>${pendingAttachment.name}</strong>
-                <span>PDF · ${formatFileSize(pendingAttachment.file.size)}</span>
+                <span>PDF Â· ${formatFileSize(pendingAttachment.file.size)}</span>
             </div>`;
     } else {
         chip.innerHTML = `
             <img src="${pendingAttachment.previewUrl}" alt="Receipt preview">
             <div class="attachment-chip-info">
                 <strong>${pendingAttachment.name}</strong>
-                <span>Image · ${formatFileSize(pendingAttachment.file.size)}</span>
+                <span>Image Â· ${formatFileSize(pendingAttachment.file.size)}</span>
             </div>`;
     }
     preview.hidden = false;
@@ -1294,7 +1294,7 @@ async function loadFlags(force = false) {
     const el = document.getElementById('alerts-list');
     if (!el) return;
     if (flagsLoaded && !force) return;
-    el.innerHTML = '<div class="guardian-item">Loading flagged transactions?</div>';
+    el.innerHTML = '<div class="guardian-item">Loading flagged transactionsâ€¦</div>';
     try {
         await loadPolicyPanel();
         const res = await fetch('/api/flags');
@@ -1385,7 +1385,7 @@ function renderReviewQueue() {
     applyReviewFilter();
 
     if (!reviewFiltered.length) {
-        queue.innerHTML = '<div class="review-queue-empty guardian-item">Nothing waiting ? you\'re all caught up!</div>';
+        queue.innerHTML = '<div class="review-queue-empty guardian-item">Nothing waiting â€” you\'re all caught up!</div>';
         return;
     }
 
@@ -1400,7 +1400,7 @@ function renderReviewQueue() {
             </div>
             <strong class="review-queue-title">${escapeHtml(item.title)}</strong>
             <span class="review-queue-amount">${escapeHtml(item.amount)}</span>
-            <span class="review-queue-meta">${escapeHtml(item.employee)} · ${escapeHtml(item.department)}</span>
+            <span class="review-queue-meta">${escapeHtml(item.employee)} Â· ${escapeHtml(item.department)}</span>
             <p class="review-queue-preview">${escapeHtml(preview)}</p>
         </button>`;
     }).join('');
@@ -1423,7 +1423,7 @@ function renderReviewDetail(idx) {
                 <div>
                     <span class="review-kind review-kind--approval">Expense request</span>
                     <h3 class="panel-title">${escapeHtml(item.title)}</h3>
-                    <p class="panel-subtitle">${escapeHtml(item.employee)} · ${escapeHtml(item.department)} · ${escapeHtml(item.amount)}</p>
+                    <p class="panel-subtitle">${escapeHtml(item.employee)} Â· ${escapeHtml(item.department)} Â· ${escapeHtml(item.amount)}</p>
                 </div>
             </header>
             <div class="review-problems-block">
@@ -1441,16 +1441,16 @@ function renderReviewDetail(idx) {
                 <div>
                     <span class="review-kind review-kind--proposal">Project proposal</span>
                     <h3 class="panel-title">${escapeHtml(item.title)}</h3>
-                    <p class="panel-subtitle">${escapeHtml(item.employee)} · ${escapeHtml(item.department)} · ${escapeHtml(item.amount)} · ${escapeHtml(item.budget_source_label || '')}</p>
+                    <p class="panel-subtitle">${escapeHtml(item.employee)} Â· ${escapeHtml(item.department)} Â· ${escapeHtml(item.amount)} Â· ${escapeHtml(item.budget_source_label || '')}</p>
                 </div>
             </header>
             <div class="proposal-detail-desc">
                 <h4 class="review-problems-title">Budget type</h4>
-                <p>${escapeHtml(item.budget_source_label || '?')}</p>
+                <p>${escapeHtml(item.budget_source_label || 'â€”')}</p>
             </div>
             <div class="proposal-detail-desc">
                 <h4 class="review-problems-title">Project description</h4>
-                <p>${escapeHtml(item.description || '?')}</p>
+                <p>${escapeHtml(item.description || 'â€”')}</p>
             </div>
             <div class="review-problems-block">
                 <h4 class="review-problems-title">Budget context</h4>
@@ -1467,7 +1467,7 @@ function renderReviewDetail(idx) {
                 <div>
                     <span class="review-kind review-kind--fraud">Fraud flag</span>
                     <h3 class="panel-title">${escapeHtml(item.title)}</h3>
-                    <p class="panel-subtitle">${escapeHtml(item.employee)} · ${escapeHtml(item.department)} · ${escapeHtml(item.amount)} · Score <strong class="${reviewRiskClass(item)}">${escapeHtml(item.risk_label)}</strong></p>
+                    <p class="panel-subtitle">${escapeHtml(item.employee)} Â· ${escapeHtml(item.department)} Â· ${escapeHtml(item.amount)} Â· Score <strong class="${reviewRiskClass(item)}">${escapeHtml(item.risk_label)}</strong></p>
                 </div>
             </header>
             <div class="review-problems-block">
@@ -1476,10 +1476,10 @@ function renderReviewDetail(idx) {
             </div>
             <div class="fraud-fields">
                 <div class="fraud-field"><label>Transaction</label><div>${escapeHtml(item.transaction_id)}</div></div>
-                <div class="fraud-field"><label>Date</label><div>${escapeHtml(item.timestamp || '?')}</div></div>
-                <div class="fraud-field"><label>Category</label><div>${escapeHtml(item.merchant_category || '?')}</div></div>
-                <div class="fraud-field"><label>Channel</label><div>${escapeHtml(item.channel || '?')}</div></div>
-                <div class="fraud-field"><label>Countries</label><div>${escapeHtml(item.cardholder_country || '?')} · ${escapeHtml(item.merchant_country || '?')}</div></div>
+                <div class="fraud-field"><label>Date</label><div>${escapeHtml(item.timestamp || 'â€”')}</div></div>
+                <div class="fraud-field"><label>Category</label><div>${escapeHtml(item.merchant_category || 'â€”')}</div></div>
+                <div class="fraud-field"><label>Channel</label><div>${escapeHtml(item.channel || 'â€”')}</div></div>
+                <div class="fraud-field"><label>Countries</label><div>${escapeHtml(item.cardholder_country || 'â€”')} Â· ${escapeHtml(item.merchant_country || 'â€”')}</div></div>
             </div>
             <footer class="review-actions">
                 <button type="button" class="btn-sm btn-approve" data-review-action="approve">Approve</button>
@@ -1519,7 +1519,7 @@ async function loadReview(force = false) {
     if (!queue) return;
     if (reviewLoaded && !force) return;
 
-    queue.innerHTML = '<div class="review-queue-empty guardian-item">Building review queue?</div>';
+    queue.innerHTML = '<div class="review-queue-empty guardian-item">Building review queueâ€¦</div>';
     if (detail) detail.hidden = true;
 
     try {
@@ -1561,7 +1561,7 @@ function renderProposalList(items) {
     const el = document.getElementById('proposal-list');
     if (!el) return;
     if (!items.length) {
-        el.innerHTML = '<div class="guardian-item">No proposals yet ? submit one using the form.</div>';
+        el.innerHTML = '<div class="guardian-item">No proposals yet â€” submit one using the form.</div>';
         return;
     }
     el.innerHTML = items.map((p) => `
@@ -1570,8 +1570,8 @@ function renderProposalList(items) {
                 <strong>${escapeHtml(p.title)}</strong>
                 <span class="proposal-status ${proposalStatusClass(p.status)}">${escapeHtml(p.status)}</span>
             </div>
-            <div class="proposal-item-meta">${escapeHtml(p.requested_amount_fmt)} · ${escapeHtml(p.budget_source_label || '?')} · ${escapeHtml(p.quarter || '?')} · ${escapeHtml(p.submitted_at?.slice(0, 10) || '')}</div>
-            ${p.status === 'approved' && p.spent_fmt ? `<div class="proposal-item-spend">${escapeHtml(p.spent_fmt)} spent · ${escapeHtml(p.remaining_fmt)} left of budget</div>` : ''}
+            <div class="proposal-item-meta">${escapeHtml(p.requested_amount_fmt)} Â· ${escapeHtml(p.budget_source_label || 'â€”')} Â· ${escapeHtml(p.quarter || 'â€”')} Â· ${escapeHtml(p.submitted_at?.slice(0, 10) || '')}</div>
+            ${p.status === 'approved' && p.spent_fmt ? `<div class="proposal-item-spend">${escapeHtml(p.spent_fmt)} spent Â· ${escapeHtml(p.remaining_fmt)} left of budget</div>` : ''}
             <p class="proposal-item-desc">${escapeHtml(p.description)}</p>
             ${p.decision_note ? `<p class="proposal-item-note"><strong>Note:</strong> ${escapeHtml(p.decision_note)}</p>` : ''}
         </article>
@@ -1584,7 +1584,7 @@ async function loadProposals(force = false) {
     if (!list) return;
     if (proposalsLoaded && !force) return;
 
-    list.innerHTML = '<div class="guardian-item">Loading?</div>';
+    list.innerHTML = '<div class="guardian-item">Loadingâ€¦</div>';
     try {
         const [mineRes, hintRes] = await Promise.all([
             fetch('/api/proposals/mine'),
@@ -1594,7 +1594,7 @@ async function loadProposals(force = false) {
         const budget = await hintRes.json();
         if (!mineRes.ok) throw new Error(items.error || 'Failed to load proposals');
         if (hint && hintRes.ok) {
-            hint.textContent = `${budget.department} · ${budget.quarter}: ${budget.spent_fmt} spent of ${budget.budget_fmt} (${budget.remaining_fmt} left)`;
+            hint.textContent = `${budget.department} Â· ${budget.quarter}: ${budget.spent_fmt} spent of ${budget.budget_fmt} (${budget.remaining_fmt} left)`;
         } else if (hint) {
             hint.textContent = 'Department budget info unavailable.';
         }
@@ -1633,7 +1633,7 @@ function setupProposalForm() {
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Submit failed');
             form.reset();
-            if (statusEl) statusEl.textContent = 'Submitted ? waiting for approval.';
+            if (statusEl) statusEl.textContent = 'Submitted â€” waiting for approval.';
             proposalsLoaded = false;
             await loadProposals(true);
         } catch (err) {
@@ -1679,7 +1679,7 @@ function updateTripReportSelectionSummary() {
         if (row) sum += Number(row.amount_raw) || 0;
     });
     totalEl.hidden = false;
-    totalEl.textContent = `${keys.length} purchase${keys.length === 1 ? '' : 's'} selected · ${formatCad(sum)} total`;
+    totalEl.textContent = `${keys.length} purchase${keys.length === 1 ? '' : 's'} selected Â· ${formatCad(sum)} total`;
 }
 
 function tripReportPurchaseSearchText(t) {
@@ -1708,11 +1708,11 @@ function renderTripReportSelectedPurchases() {
     chipsEl.innerHTML = keys.map((key) => {
         const t = tripReportTransactions.find((row) => row.key === key);
         if (!t) return '';
-        const label = `${t.vendor} · ${t.date} · ${t.amount}`;
+        const label = `${t.vendor} Â· ${t.date} Â· ${t.amount}`;
         return `
             <span class="proposal-colleague-chip colleague-picker-chip${t.flagged ? ' trip-purchase-chip--flagged' : ''}">
                 <span>${escapeHtml(label)}</span>
-                <button type="button" class="colleague-picker-remove" data-purchase-key="${escapeHtml(key)}" aria-label="Remove ${escapeHtml(t.vendor)}">?</button>
+                <button type="button" class="colleague-picker-remove" data-purchase-key="${escapeHtml(key)}" aria-label="Remove ${escapeHtml(t.vendor)}">Ã—</button>
             </span>`;
     }).join('');
     chipsEl.querySelectorAll('[data-purchase-key]').forEach((btn) => {
@@ -1734,7 +1734,7 @@ function renderTripReportPurchaseDropdown(query = '') {
     dropdown.innerHTML = items.map((t) => `
         <button type="button" class="colleague-picker-option${t.flagged ? ' trip-purchase-option--flagged' : ''}" role="option" data-purchase-key="${escapeHtml(t.key)}">
             <span class="colleague-picker-option-name">${escapeHtml(t.vendor)}</span>
-            <span class="colleague-picker-option-dept">${escapeHtml(t.date)} · ${escapeHtml(t.category)} · ${escapeHtml(t.amount)}${t.flagged ? ' · Flagged' : ''}</span>
+            <span class="colleague-picker-option-dept">${escapeHtml(t.date)} Â· ${escapeHtml(t.category)} Â· ${escapeHtml(t.amount)}${t.flagged ? ' Â· Flagged' : ''}</span>
         </button>
     `).join('');
     dropdown.hidden = false;
@@ -1857,7 +1857,7 @@ function renderTripReportList(items) {
     const el = document.getElementById('trip-report-list');
     if (!el) return;
     if (!items.length) {
-        el.innerHTML = '<div class="guardian-item">No trip reports yet ? submit one using the form.</div>';
+        el.innerHTML = '<div class="guardian-item">No trip reports yet â€” submit one using the form.</div>';
         return;
     }
     el.innerHTML = items.map((r) => `
@@ -1866,7 +1866,7 @@ function renderTripReportList(items) {
                 <strong>${escapeHtml(r.trip_name)}</strong>
                 <span class="proposal-status ${tripReportStatusClass(r.status)}">${escapeHtml(tripReportStatusLabel(r.status))}</span>
             </div>
-            <div class="proposal-item-meta">${escapeHtml(r.total_formatted)} · ${escapeHtml(String(r.transaction_count))} purchases · ${escapeHtml(r.date_range || '')} · ${escapeHtml(r.submitted_at?.slice(0, 10) || '')}${r.spending_purpose === 'project' && r.project_title ? ` · ${escapeHtml(r.project_title)}` : r.spending_purpose === 'personal' ? ' · Personal' : ''}</div>
+            <div class="proposal-item-meta">${escapeHtml(r.total_formatted)} Â· ${escapeHtml(String(r.transaction_count))} purchases Â· ${escapeHtml(r.date_range || '')} Â· ${escapeHtml(r.submitted_at?.slice(0, 10) || '')}${r.spending_purpose === 'project' && r.project_title ? ` Â· ${escapeHtml(r.project_title)}` : r.spending_purpose === 'personal' ? ' Â· Personal' : ''}</div>
             ${(r.tags || []).length ? `<div class="report-tags">${r.tags.slice(0, 4).map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
             <p class="proposal-item-desc">${escapeHtml(r.purpose || '')}</p>
             ${r.decision_note ? `<p class="proposal-item-note"><strong>Note:</strong> ${escapeHtml(r.decision_note)}</p>` : ''}
@@ -1886,7 +1886,7 @@ async function openEmployeeTripReportModal(reportId) {
     const footer = document.getElementById('report-modal-footer');
     const title = document.getElementById('report-modal-title');
     if (!modal || !body) return;
-    body.innerHTML = '<div class="guardian-item">Loading report?</div>';
+    body.innerHTML = '<div class="guardian-item">Loading reportâ€¦</div>';
     if (footer) footer.innerHTML = '';
     modal.hidden = false;
     try {
@@ -1898,7 +1898,7 @@ async function openEmployeeTripReportModal(reportId) {
             <tr><td>${escapeHtml(t.date)}</td><td>${escapeHtml(t.vendor)}</td><td>${escapeHtml(t.category)}</td><td>${escapeHtml(t.amount)}</td></tr>
         `).join('');
         body.innerHTML = `
-            <p><strong>${escapeHtml(r.employee)}</strong> · ${escapeHtml(r.department)} · ${escapeHtml(r.date_range || '')}</p>
+            <p><strong>${escapeHtml(r.employee)}</strong> Â· ${escapeHtml(r.department)} Â· ${escapeHtml(r.date_range || '')}</p>
             ${r.spending_purpose === 'project' && r.project_title ? `<p><strong>Project:</strong> ${escapeHtml(r.project_title)}</p>` : r.spending_purpose === 'personal' ? '<p><strong>Personal</strong> travel</p>' : ''}
             ${r.purpose ? `<p>${escapeHtml(r.purpose)}</p>` : ''}
             <p>${escapeHtml(r.policy_summary || '')}</p>
@@ -1918,13 +1918,13 @@ async function loadTripReports(force = false) {
     if (!list) return;
     if (tripReportsLoaded && !force) return;
 
-    list.innerHTML = '<div class="guardian-item">Loading?</div>';
+    list.innerHTML = '<div class="guardian-item">Loadingâ€¦</div>';
     const picker = document.getElementById('trip-report-purchase-picker');
     const emptyEl = document.getElementById('trip-report-purchase-empty');
     if (picker && !tripReportTransactions.length) picker.hidden = true;
     if (emptyEl && !tripReportTransactions.length) {
         emptyEl.hidden = false;
-        emptyEl.textContent = 'Loading purchases?';
+        emptyEl.textContent = 'Loading purchasesâ€¦';
     }
     try {
         const [mineRes, txnRes] = await Promise.all([
@@ -2004,7 +2004,7 @@ function setupTripReportForm() {
             resetTripReportPurchasePicker();
             syncTripReportFormPurpose();
             await refreshTripReportProjectSelect();
-            if (statusEl) statusEl.textContent = 'Submitted ? waiting for finance review.';
+            if (statusEl) statusEl.textContent = 'Submitted â€” waiting for finance review.';
             tripReportsLoaded = false;
             tripReportTransactions = [];
             await loadTripReports(true);
@@ -2125,7 +2125,7 @@ function budgetDeptNote(d) {
     const msg = (d.forecast_message || '').trim();
     if (!msg) return '';
     const short = msg.includes('.') ? msg.split('.')[0] : msg;
-    return short.length > 72 ? `${short.slice(0, 69)}?` : short;
+    return short.length > 72 ? `${short.slice(0, 69)}â€¦` : short;
 }
 
 function renderBudgetDepartments(departments) {
@@ -2191,14 +2191,14 @@ function renderBudgetProjection(fc) {
 
     if (titleEl) {
         titleEl.textContent = fc.department
-            ? `Budget projection ? ${fc.department}`
+            ? `Budget projection â€” ${fc.department}`
             : 'Budget projection';
     }
     if (subtitleEl) {
         const parts = [fc.quarter || 'This quarter', `${fc.spent_fmt || ''} spent so far`.trim()];
         if (fc.weekly_burn_fmt) parts.push(`${fc.weekly_burn_fmt}/wk burn`);
         if (fc.projected_eoq_fmt) parts.push(`${fc.projected_eoq_fmt} projected EoQ`);
-        subtitleEl.textContent = parts.filter(Boolean).join(' · ');
+        subtitleEl.textContent = parts.filter(Boolean).join(' Â· ');
     }
     if (footnoteEl) {
         const today = fc.today_date ? `through ${fc.today_date}` : (fc.current_week_label ? `through week of ${fc.current_week_label}` : 'to date');
@@ -2430,7 +2430,7 @@ async function loadBudget(force = false) {
         return;
     }
     const listEl = document.getElementById('budget-dept-list');
-    if (listEl) listEl.innerHTML = '<div class="guardian-item">Loading budgets?</div>';
+    if (listEl) listEl.innerHTML = '<div class="guardian-item">Loading budgetsâ€¦</div>';
     try {
         const res = await fetch(`/api/budget?_=${Date.now()}`, { cache: 'no-store' });
         const data = await res.json();
@@ -2472,7 +2472,7 @@ function renderTeamRoster(employees) {
             <div class="credit-avatar credit-avatar--team">${initials}</div>
             <div class="team-info credit-info">
                 <button type="button" class="emp-link credit-name" data-employee="${e.name}">${e.name}</button>
-                <div class="roster-meta">${e.employee_id} · ${escapeHtml(e.department || '?')} · ${e.transaction_count} txns · ${e.total_spend_fmt}</div>
+                <div class="roster-meta">${e.employee_id} Â· ${escapeHtml(e.department || 'â€”')} Â· ${e.transaction_count} txns Â· ${e.total_spend_fmt}</div>
                 <div class="credit-bar"><div class="credit-bar-fill" style="width:${e.credit_score}%;background:${scoreBarColor(e.credit_score)}"></div></div>
             </div>
             <div class="credit-score ${scoreClass(e.credit_score)}">${formatCreditScore(e.credit_score)}</div>
@@ -2501,7 +2501,7 @@ function renderActivityFeed(recent) {
 }
 
 function renderTxTable(recent) {
-    /* Home dashboard preview only ? full list uses renderPurchasesTable */
+    /* Home dashboard preview only â€” full list uses renderPurchasesTable */
     const el = document.getElementById('tx-table');
     if (!el || purchasesLoaded) return;
     if (!recent?.length) {
@@ -2700,7 +2700,7 @@ function setReceiptsPageFile(file) {
     } else if (previewImg) {
         previewImg.hidden = true;
     }
-    if (meta) meta.textContent = `${file.name} · ${formatFileSize(file.size)}`;
+    if (meta) meta.textContent = `${file.name} Â· ${formatFileSize(file.size)}`;
     document.getElementById('receipts-scan-btn')?.removeAttribute('disabled');
     document.getElementById('receipts-status').textContent = '';
 }
@@ -2749,10 +2749,10 @@ function renderReceiptsScanResult(result) {
     if (matchBanner) {
         if (matched) {
             matchBanner.className = 'receipts-match-banner receipts-match-banner--ok';
-            matchBanner.innerHTML = `<i class="fa-solid fa-circle-check"></i> Matched to transaction · ${escapeHtml(matched.merchant_name || '')} · ${moneyTick(matched.amount_cad)} · ${escapeHtml(matched.transaction_date || '')}`;
+            matchBanner.innerHTML = `<i class="fa-solid fa-circle-check"></i> Matched to transaction Â· ${escapeHtml(matched.merchant_name || '')} Â· ${moneyTick(matched.amount_cad)} Â· ${escapeHtml(matched.transaction_date || '')}`;
         } else {
             matchBanner.className = 'receipts-match-banner receipts-match-banner--info';
-            matchBanner.innerHTML = '<i class="fa-solid fa-circle-info"></i> No card transaction matched ? review the details below and save if they look correct';
+            matchBanner.innerHTML = '<i class="fa-solid fa-circle-info"></i> No card transaction matched â€” review the details below and save if they look correct';
         }
     }
 
@@ -2771,7 +2771,7 @@ async function scanReceiptsPageFile() {
     if (!receiptsPageFile) return;
     const statusEl = document.getElementById('receipts-status');
     const scanBtn = document.getElementById('receipts-scan-btn');
-    if (statusEl) statusEl.textContent = 'Analyzing receipt?';
+    if (statusEl) statusEl.textContent = 'Analyzing receiptâ€¦';
     if (scanBtn) scanBtn.disabled = true;
 
     try {
@@ -2812,7 +2812,7 @@ async function saveReceiptsPageForm(e) {
             : null,
     };
 
-    if (statusEl) statusEl.textContent = 'Saving?';
+    if (statusEl) statusEl.textContent = 'Savingâ€¦';
     try {
         const res = await fetch('/api/receipts/confirm', {
             method: 'POST',
@@ -2852,8 +2852,8 @@ async function loadReceiptsHistory() {
                 <strong>${escapeHtml(d.merchant || 'Receipt')}</strong>
                 <span class="receipts-purpose-tag receipts-purpose-tag--${escapeHtml(r.spending_purpose || d.spending_purpose || 'project')}">${escapeHtml(purpose)}</span>
                 ${projectLine}
-                <span>${escapeHtml(d.date || '')} · ${escapeHtml(formatCad(d.amount))}</span>
-                <span class="receipts-history-meta">${escapeHtml(r.employee_name || '')} · ${escapeHtml(r.confirmed_at || '')}</span>
+                <span>${escapeHtml(d.date || '')} Â· ${escapeHtml(formatCad(d.amount))}</span>
+                <span class="receipts-history-meta">${escapeHtml(r.employee_name || '')} Â· ${escapeHtml(r.confirmed_at || '')}</span>
             </div>`;
         }).join('');
     } catch (err) {
@@ -2947,7 +2947,7 @@ async function loadPurchases(force = false) {
         renderPurchasesTable();
         return;
     }
-    el.innerHTML = '<div class="guardian-item">Loading all purchases?</div>';
+    el.innerHTML = '<div class="guardian-item">Loading all purchasesâ€¦</div>';
     try {
         const res = await fetch('/api/purchases');
         const data = await res.json();
@@ -2989,7 +2989,7 @@ function updateCompareUI() {
         chips.innerHTML = names.length
             ? names.map((n) => `
                 <span class="compare-chip">${n.split(' ')[0]}
-                    <button type="button" data-remove-compare="${n}" aria-label="Remove">×</button>
+                    <button type="button" data-remove-compare="${n}" aria-label="Remove">Ã—</button>
                 </span>`).join('')
             : '<span class="compare-label" style="font-weight:500;text-transform:none">Select people to compare</span>';
     }
@@ -3015,7 +3015,7 @@ async function openEmployeeModal(name) {
     modal.hidden = false;
 
     document.getElementById('modal-employee-name').textContent = name;
-    document.getElementById('modal-employee-meta').textContent = 'Loading Guardian employee data?';
+    document.getElementById('modal-employee-meta').textContent = 'Loading employee dataâ€¦';
     document.getElementById('modal-stats').innerHTML = '';
     renderModalTransactions([]);
 
@@ -3025,7 +3025,7 @@ async function openEmployeeModal(name) {
         if (!res.ok) throw new Error(data.error || 'Failed to load employee');
 
         document.getElementById('modal-employee-meta').textContent =
-            `${data.employee_id} · ${escapeHtml(data.department || '?')} · Credit score ${formatCreditScore(data.credit_score)}`;
+            `${data.employee_id} Â· ${escapeHtml(data.department || 'â€”')} Â· Credit score ${formatCreditScore(data.credit_score)}`;
         document.getElementById('modal-stats').innerHTML = `
             <div class="modal-stat"><span>Total</span><strong>${data.total_spend_fmt}</strong></div>
             <div class="modal-stat"><span>Txns</span><strong>${data.transaction_count}</strong></div>
@@ -3340,11 +3340,11 @@ const PAGE_TITLES = {
 };
 
 const PAGE_SUBTITLES = {
-    overview: 'Pick what you want to do ? everything is one click away.',
+    overview: 'Pick what you want to do â€” everything is one click away.',
     people: 'Tap a name for details. Check boxes to compare people.',
     activity: 'Search, filter, and sort every purchase.',
     receipts: 'Scan receipts, match to transactions, and save confirmations.',
-    proposals: 'Request budget for a project ? your manager or CEO will review it.',
+    proposals: 'Request budget for a project â€” your manager or CEO will review it.',
     'trip-reports': 'Bundle travel purchases and submit them for reimbursement review.',
     budget: 'See if departments are running out of money.',
     map: 'Where purchases happened around the world.',
@@ -3419,7 +3419,7 @@ function setupQuickNavCards() {
 }
 
 function setupWorkflowStrip() {
-    /* workflow strip removed ? sidebar + home actions are enough */
+    /* workflow strip removed â€” sidebar + home actions are enough */
 }
 
 function setupSidebarToggle() {
@@ -3669,10 +3669,10 @@ function renderCityMarkers(locations, map) {
             content: `
                 <div class="map-info">
                     <strong>${escapeHtml(loc.location)}</strong>
-                    <div>${merchantCount} merchants · ${loc.transactions} transactions</div>
+                    <div>${merchantCount} merchants Â· ${loc.transactions} transactions</div>
                     <div>${escapeHtml(loc.spend_fmt)} total spend</div>
                     ${loc.flagged ? `<div class="map-info-flag">${loc.flagged} flagged</div>` : ''}
-                    <div class="map-info-team">${escapeHtml(loc.employees.slice(0, 4).join(', '))}${loc.employees.length > 4 ? '?' : ''}</div>
+                    <div class="map-info-team">${escapeHtml(loc.employees.slice(0, 4).join(', '))}${loc.employees.length > 4 ? '...' : ''}</div>
                     <div class="map-info-hint">Zoom in to see each purchase</div>
                 </div>`,
         });
@@ -3711,10 +3711,10 @@ function renderMerchantMarkers(merchants, map) {
             content: `
                 <div class="map-info">
                     <strong>${escapeHtml(item.vendor)}</strong>
-                    <div>${escapeHtml(item.employee || '')}${item.department ? ` · ${escapeHtml(item.department)}` : ''}</div>
+                    <div>${escapeHtml(item.employee || '')}${item.department ? ` Â· ${escapeHtml(item.department)}` : ''}</div>
                     ${item.street_address ? `<div>${escapeHtml(item.street_address)}</div>` : ''}
-                    <div>${escapeHtml(item.location)}${item.postal ? ` · ${escapeHtml(item.postal)}` : ''}</div>
-                    <div>${escapeHtml(item.spend_fmt)} · ${escapeHtml(item.date || '')}</div>
+                    <div>${escapeHtml(item.location)}${item.postal ? ` Â· ${escapeHtml(item.postal)}` : ''}</div>
+                    <div>${escapeHtml(item.spend_fmt)} Â· ${escapeHtml(item.date || '')}</div>
                     ${item.flagged ? `<div class="map-info-flag">Flagged purchase</div>` : ''}
                 </div>`,
         });
@@ -3741,7 +3741,7 @@ async function fetchMerchantsInView(map) {
 
     const noteEl = document.getElementById('map-note');
     const fetchId = ++mapMerchantFetchSeq;
-    if (noteEl) noteEl.textContent = 'Loading purchases in this area?';
+    if (noteEl) noteEl.textContent = 'Loading purchases in this areaâ€¦';
 
     const res = await fetch(`/api/map-merchants?${params.toString()}`, { cache: 'no-store' });
     const data = await res.json();
@@ -3761,7 +3761,7 @@ function updateMapSummary(data, merchantMode) {
 
     if (merchantMode) {
         summaryEl.textContent =
-            `${data.plotted} purchases in view · ${data.total_in_view} total here · ${data.total_merchants} mapped purchases`;
+            `${data.plotted} purchases in view Â· ${data.total_in_view} total here Â· ${data.total_merchants} mapped purchases`;
         if (noteEl) {
             noteEl.textContent = 'Each circle is one purchase at its merchant street address. Red = flagged. More addresses geocode as you explore the map.';
         }
@@ -3769,7 +3769,7 @@ function updateMapSummary(data, merchantMode) {
     }
 
     summaryEl.textContent =
-        `${data.plotted} areas · ${data.mapped_spend_fmt} mapped spend · ${data.total_locations} locations in data`;
+        `${data.plotted} areas Â· ${data.mapped_spend_fmt} mapped spend Â· ${data.total_locations} locations in data`;
     if (noteEl) {
         noteEl.textContent = 'Zoom in to see a circle for each purchase at its street address from the CSV.';
     }
@@ -3865,7 +3865,7 @@ async function loadExpenseMap() {
         return;
     }
 
-    mapEl.innerHTML = '<div class="map-loading">Loading map?</div>';
+    mapEl.innerHTML = '<div class="map-loading">Loading mapâ€¦</div>';
 
     try {
         await loadGoogleMapsScript();
@@ -4352,7 +4352,7 @@ async function sendVoiceQuery(transcript, { popup = false } = {}) {
     }
 
     root.dataset.thinking = '1';
-    updateVoiceUiState('Thinking?');
+    updateVoiceUiState('Thinkingâ€¦');
 
     try {
         await submitAssistantQuery(transcript, { voice: true, speak: true, popup });
@@ -4409,7 +4409,7 @@ function setupVoiceAssistant() {
             stopVoiceAudio();
             voiceSpeaking = false;
             warmElevenLabs();
-            updateVoiceUiState('Listening?');
+            updateVoiceUiState('Listeningâ€¦');
         };
 
         voiceRecognition.onend = () => {
@@ -4422,8 +4422,8 @@ function setupVoiceAssistant() {
         voiceRecognition.onerror = (event) => {
             voiceListening = false;
             const msg = event.error === 'not-allowed'
-                ? 'Microphone blocked ? allow access in browser settings.'
-                : 'Could not hear you ? try again.';
+                ? 'Microphone blocked â€” allow access in browser settings.'
+                : 'Could not hear you â€” try again.';
             updateVoiceUiState(msg);
         };
 
