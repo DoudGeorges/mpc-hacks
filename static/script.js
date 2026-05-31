@@ -109,7 +109,7 @@ function renderDepartmentList(departments, containerId) {
     el.innerHTML = (departments || []).map((d) => `
         <div class="guardian-item">
             <strong>${escapeHtml(d.department)}</strong>
-            <div>${escapeHtml(d.total_spent_fmt)} ? ${d.transaction_count} txns ? ${d.flagged_transactions} flagged</div>
+            <div>${escapeHtml(d.total_spent_fmt)} · ${d.transaction_count} txns · ${d.flagged_transactions} flagged</div>
             <div class="guardian-item-meta">Avg score ${Number(d.average_score).toFixed(1)}</div>
         </div>`).join('');
 }
@@ -161,7 +161,7 @@ function renderFlaggedTransactions(items, containerId = 'alerts-list') {
                         <td>${escapeHtml(f.vendor)}</td>
                         <td><strong>${escapeHtml(f.amount)}</strong></td>
                         <td>${escapeHtml(f.date)}</td>
-                        <td><small>${escapeHtml(f.reason)}${f.flag_type ? ` ? ${escapeHtml(f.flag_type.replace(/_/g, ' '))}` : ''}</small></td>
+                        <td><small>${escapeHtml(f.reason)}${f.flag_type ? ` · ${escapeHtml(f.flag_type.replace(/_/g, ' '))}` : ''}</small></td>
                     </tr>`).join('')}
             </tbody>
         </table>`;
@@ -176,9 +176,9 @@ function renderOffenders(items) {
     }
     el.innerHTML = items.map((o, i) => `
         <div class="guardian-item">
-            <strong>#${i + 1} ${escapeHtml(o.employee)} ? ${escapeHtml(o.department)}</strong>
-            <div>${o.violations} violation(s) ? ${o.severe} high/severe${o.split_purchases ? ` ? ${o.split_purchases} split` : ''}</div>
-            <div class="guardian-item-meta">Score ${Number(o.credit_score).toFixed(1)} ? CA$${Number(o.total_amount).toLocaleString(undefined, { maximumFractionDigits: 0 })} flagged</div>
+            <strong>#${i + 1} ${escapeHtml(o.employee)} · ${escapeHtml(o.department)}</strong>
+            <div>${o.violations} violation(s) · ${o.severe} high/severe${o.split_purchases ? ` · ${o.split_purchases} split` : ''}</div>
+            <div class="guardian-item-meta">Score ${Number(o.credit_score).toFixed(1)} · CA$${Number(o.total_amount).toLocaleString(undefined, { maximumFractionDigits: 0 })} flagged</div>
         </div>`).join('');
 }
 
@@ -485,7 +485,7 @@ function resetBudgetSettingsForm() {
         if (row) input.value = String(row.auto_budget);
     });
     const status = document.getElementById('budget-save-status');
-    if (status) status.textContent = 'Reset to suggested ? click Save budgets to apply';
+    if (status) status.textContent = 'Reset ? suggested ? click Save budgets to apply';
 }
 
 async function loadSettings(force = false, tab = 'budgets') {
@@ -653,7 +653,7 @@ function moneyTick(v) {
 }
 
 function projectOptionLabel(p) {
-    return `${p.title} ? ${p.spent_fmt || formatCad(0)} spent of ${p.requested_amount_fmt} budget`;
+    return `${p.title} · ${p.spent_fmt || formatCad(0)} spent of ${p.requested_amount_fmt} budget`;
 }
 
 function buildChartConfig(chart) {
@@ -837,7 +837,7 @@ function updateReceiptProjectHint(select, hintEl, projects) {
         hintEl.textContent = '';
         return;
     }
-    hintEl.textContent = `${project.spent_fmt} spent on this project ? ${project.remaining_fmt} left of ${project.requested_amount_fmt} budget`;
+    hintEl.textContent = `${project.spent_fmt} spent on this project · ${project.remaining_fmt} left of ${project.requested_amount_fmt} budget`;
 }
 
 function syncReceiptsFormPurpose() {
@@ -1045,14 +1045,14 @@ function renderAttachmentPreview() {
             <div class="attachment-file-icon"><i class="fa-solid fa-file-pdf"></i></div>
             <div class="attachment-chip-info">
                 <strong>${pendingAttachment.name}</strong>
-                <span>PDF ? ${formatFileSize(pendingAttachment.file.size)}</span>
+                <span>PDF · ${formatFileSize(pendingAttachment.file.size)}</span>
             </div>`;
     } else {
         chip.innerHTML = `
             <img src="${pendingAttachment.previewUrl}" alt="Receipt preview">
             <div class="attachment-chip-info">
                 <strong>${pendingAttachment.name}</strong>
-                <span>Image ? ${formatFileSize(pendingAttachment.file.size)}</span>
+                <span>Image · ${formatFileSize(pendingAttachment.file.size)}</span>
             </div>`;
     }
     preview.hidden = false;
@@ -1400,7 +1400,7 @@ function renderReviewQueue() {
             </div>
             <strong class="review-queue-title">${escapeHtml(item.title)}</strong>
             <span class="review-queue-amount">${escapeHtml(item.amount)}</span>
-            <span class="review-queue-meta">${escapeHtml(item.employee)} ? ${escapeHtml(item.department)}</span>
+            <span class="review-queue-meta">${escapeHtml(item.employee)} · ${escapeHtml(item.department)}</span>
             <p class="review-queue-preview">${escapeHtml(preview)}</p>
         </button>`;
     }).join('');
@@ -1423,7 +1423,7 @@ function renderReviewDetail(idx) {
                 <div>
                     <span class="review-kind review-kind--approval">Expense request</span>
                     <h3 class="panel-title">${escapeHtml(item.title)}</h3>
-                    <p class="panel-subtitle">${escapeHtml(item.employee)} ? ${escapeHtml(item.department)} ? ${escapeHtml(item.amount)}</p>
+                    <p class="panel-subtitle">${escapeHtml(item.employee)} · ${escapeHtml(item.department)} · ${escapeHtml(item.amount)}</p>
                 </div>
             </header>
             <div class="review-problems-block">
@@ -1441,7 +1441,7 @@ function renderReviewDetail(idx) {
                 <div>
                     <span class="review-kind review-kind--proposal">Project proposal</span>
                     <h3 class="panel-title">${escapeHtml(item.title)}</h3>
-                    <p class="panel-subtitle">${escapeHtml(item.employee)} ? ${escapeHtml(item.department)} ? ${escapeHtml(item.amount)} ? ${escapeHtml(item.budget_source_label || '')}</p>
+                    <p class="panel-subtitle">${escapeHtml(item.employee)} · ${escapeHtml(item.department)} · ${escapeHtml(item.amount)} · ${escapeHtml(item.budget_source_label || '')}</p>
                 </div>
             </header>
             <div class="proposal-detail-desc">
@@ -1467,7 +1467,7 @@ function renderReviewDetail(idx) {
                 <div>
                     <span class="review-kind review-kind--fraud">Fraud flag</span>
                     <h3 class="panel-title">${escapeHtml(item.title)}</h3>
-                    <p class="panel-subtitle">${escapeHtml(item.employee)} ? ${escapeHtml(item.department)} ? ${escapeHtml(item.amount)} ? Score <strong class="${reviewRiskClass(item)}">${escapeHtml(item.risk_label)}</strong></p>
+                    <p class="panel-subtitle">${escapeHtml(item.employee)} · ${escapeHtml(item.department)} · ${escapeHtml(item.amount)} · Score <strong class="${reviewRiskClass(item)}">${escapeHtml(item.risk_label)}</strong></p>
                 </div>
             </header>
             <div class="review-problems-block">
@@ -1479,7 +1479,7 @@ function renderReviewDetail(idx) {
                 <div class="fraud-field"><label>Date</label><div>${escapeHtml(item.timestamp || '?')}</div></div>
                 <div class="fraud-field"><label>Category</label><div>${escapeHtml(item.merchant_category || '?')}</div></div>
                 <div class="fraud-field"><label>Channel</label><div>${escapeHtml(item.channel || '?')}</div></div>
-                <div class="fraud-field"><label>Countries</label><div>${escapeHtml(item.cardholder_country || '?')} ? ${escapeHtml(item.merchant_country || '?')}</div></div>
+                <div class="fraud-field"><label>Countries</label><div>${escapeHtml(item.cardholder_country || '?')} · ${escapeHtml(item.merchant_country || '?')}</div></div>
             </div>
             <footer class="review-actions">
                 <button type="button" class="btn-sm btn-approve" data-review-action="approve">Approve</button>
@@ -1570,8 +1570,8 @@ function renderProposalList(items) {
                 <strong>${escapeHtml(p.title)}</strong>
                 <span class="proposal-status ${proposalStatusClass(p.status)}">${escapeHtml(p.status)}</span>
             </div>
-            <div class="proposal-item-meta">${escapeHtml(p.requested_amount_fmt)} ? ${escapeHtml(p.budget_source_label || '?')} ? ${escapeHtml(p.quarter || '?')} ? ${escapeHtml(p.submitted_at?.slice(0, 10) || '')}</div>
-            ${p.status === 'approved' && p.spent_fmt ? `<div class="proposal-item-spend">${escapeHtml(p.spent_fmt)} spent ? ${escapeHtml(p.remaining_fmt)} left of budget</div>` : ''}
+            <div class="proposal-item-meta">${escapeHtml(p.requested_amount_fmt)} · ${escapeHtml(p.budget_source_label || '?')} · ${escapeHtml(p.quarter || '?')} · ${escapeHtml(p.submitted_at?.slice(0, 10) || '')}</div>
+            ${p.status === 'approved' && p.spent_fmt ? `<div class="proposal-item-spend">${escapeHtml(p.spent_fmt)} spent · ${escapeHtml(p.remaining_fmt)} left of budget</div>` : ''}
             <p class="proposal-item-desc">${escapeHtml(p.description)}</p>
             ${p.decision_note ? `<p class="proposal-item-note"><strong>Note:</strong> ${escapeHtml(p.decision_note)}</p>` : ''}
         </article>
@@ -1594,7 +1594,7 @@ async function loadProposals(force = false) {
         const budget = await hintRes.json();
         if (!mineRes.ok) throw new Error(items.error || 'Failed to load proposals');
         if (hint && hintRes.ok) {
-            hint.textContent = `${budget.department} ? ${budget.quarter}: ${budget.spent_fmt} spent of ${budget.budget_fmt} (${budget.remaining_fmt} left)`;
+            hint.textContent = `${budget.department} · ${budget.quarter}: ${budget.spent_fmt} spent of ${budget.budget_fmt} (${budget.remaining_fmt} left)`;
         } else if (hint) {
             hint.textContent = 'Department budget info unavailable.';
         }
@@ -1679,7 +1679,7 @@ function updateTripReportSelectionSummary() {
         if (row) sum += Number(row.amount_raw) || 0;
     });
     totalEl.hidden = false;
-    totalEl.textContent = `${keys.length} purchase${keys.length === 1 ? '' : 's'} selected ? ${formatCad(sum)} total`;
+    totalEl.textContent = `${keys.length} purchase${keys.length === 1 ? '' : 's'} selected · ${formatCad(sum)} total`;
 }
 
 function tripReportPurchaseSearchText(t) {
@@ -1708,7 +1708,7 @@ function renderTripReportSelectedPurchases() {
     chipsEl.innerHTML = keys.map((key) => {
         const t = tripReportTransactions.find((row) => row.key === key);
         if (!t) return '';
-        const label = `${t.vendor} ? ${t.date} ? ${t.amount}`;
+        const label = `${t.vendor} · ${t.date} · ${t.amount}`;
         return `
             <span class="proposal-colleague-chip colleague-picker-chip${t.flagged ? ' trip-purchase-chip--flagged' : ''}">
                 <span>${escapeHtml(label)}</span>
@@ -1734,7 +1734,7 @@ function renderTripReportPurchaseDropdown(query = '') {
     dropdown.innerHTML = items.map((t) => `
         <button type="button" class="colleague-picker-option${t.flagged ? ' trip-purchase-option--flagged' : ''}" role="option" data-purchase-key="${escapeHtml(t.key)}">
             <span class="colleague-picker-option-name">${escapeHtml(t.vendor)}</span>
-            <span class="colleague-picker-option-dept">${escapeHtml(t.date)} ? ${escapeHtml(t.category)} ? ${escapeHtml(t.amount)}${t.flagged ? ' ? Flagged' : ''}</span>
+            <span class="colleague-picker-option-dept">${escapeHtml(t.date)} · ${escapeHtml(t.category)} · ${escapeHtml(t.amount)}${t.flagged ? ' · Flagged' : ''}</span>
         </button>
     `).join('');
     dropdown.hidden = false;
@@ -1866,7 +1866,7 @@ function renderTripReportList(items) {
                 <strong>${escapeHtml(r.trip_name)}</strong>
                 <span class="proposal-status ${tripReportStatusClass(r.status)}">${escapeHtml(tripReportStatusLabel(r.status))}</span>
             </div>
-            <div class="proposal-item-meta">${escapeHtml(r.total_formatted)} ? ${escapeHtml(String(r.transaction_count))} purchases ? ${escapeHtml(r.date_range || '')} ? ${escapeHtml(r.submitted_at?.slice(0, 10) || '')}${r.spending_purpose === 'project' && r.project_title ? ` ? ${escapeHtml(r.project_title)}` : r.spending_purpose === 'personal' ? ' ? Personal' : ''}</div>
+            <div class="proposal-item-meta">${escapeHtml(r.total_formatted)} · ${escapeHtml(String(r.transaction_count))} purchases · ${escapeHtml(r.date_range || '')} · ${escapeHtml(r.submitted_at?.slice(0, 10) || '')}${r.spending_purpose === 'project' && r.project_title ? ` · ${escapeHtml(r.project_title)}` : r.spending_purpose === 'personal' ? ' · Personal' : ''}</div>
             ${(r.tags || []).length ? `<div class="report-tags">${r.tags.slice(0, 4).map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
             <p class="proposal-item-desc">${escapeHtml(r.purpose || '')}</p>
             ${r.decision_note ? `<p class="proposal-item-note"><strong>Note:</strong> ${escapeHtml(r.decision_note)}</p>` : ''}
@@ -1898,7 +1898,7 @@ async function openEmployeeTripReportModal(reportId) {
             <tr><td>${escapeHtml(t.date)}</td><td>${escapeHtml(t.vendor)}</td><td>${escapeHtml(t.category)}</td><td>${escapeHtml(t.amount)}</td></tr>
         `).join('');
         body.innerHTML = `
-            <p><strong>${escapeHtml(r.employee)}</strong> ? ${escapeHtml(r.department)} ? ${escapeHtml(r.date_range || '')}</p>
+            <p><strong>${escapeHtml(r.employee)}</strong> · ${escapeHtml(r.department)} · ${escapeHtml(r.date_range || '')}</p>
             ${r.spending_purpose === 'project' && r.project_title ? `<p><strong>Project:</strong> ${escapeHtml(r.project_title)}</p>` : r.spending_purpose === 'personal' ? '<p><strong>Personal</strong> travel</p>' : ''}
             ${r.purpose ? `<p>${escapeHtml(r.purpose)}</p>` : ''}
             <p>${escapeHtml(r.policy_summary || '')}</p>
@@ -2198,7 +2198,7 @@ function renderBudgetProjection(fc) {
         const parts = [fc.quarter || 'This quarter', `${fc.spent_fmt || ''} spent so far`.trim()];
         if (fc.weekly_burn_fmt) parts.push(`${fc.weekly_burn_fmt}/wk burn`);
         if (fc.projected_eoq_fmt) parts.push(`${fc.projected_eoq_fmt} projected EoQ`);
-        subtitleEl.textContent = parts.filter(Boolean).join(' ? ');
+        subtitleEl.textContent = parts.filter(Boolean).join(' · ');
     }
     if (footnoteEl) {
         const today = fc.today_date ? `through ${fc.today_date}` : (fc.current_week_label ? `through week of ${fc.current_week_label}` : 'to date');
@@ -2472,7 +2472,7 @@ function renderTeamRoster(employees) {
             <div class="credit-avatar credit-avatar--team">${initials}</div>
             <div class="team-info credit-info">
                 <button type="button" class="emp-link credit-name" data-employee="${e.name}">${e.name}</button>
-                <div class="roster-meta">${e.employee_id} ? ${escapeHtml(e.department || '?')} ? ${e.transaction_count} txns ? ${e.total_spend_fmt}</div>
+                <div class="roster-meta">${e.employee_id} · ${escapeHtml(e.department || '?')} · ${e.transaction_count} txns · ${e.total_spend_fmt}</div>
                 <div class="credit-bar"><div class="credit-bar-fill" style="width:${e.credit_score}%;background:${scoreBarColor(e.credit_score)}"></div></div>
             </div>
             <div class="credit-score ${scoreClass(e.credit_score)}">${formatCreditScore(e.credit_score)}</div>
@@ -2700,7 +2700,7 @@ function setReceiptsPageFile(file) {
     } else if (previewImg) {
         previewImg.hidden = true;
     }
-    if (meta) meta.textContent = `${file.name} ? ${formatFileSize(file.size)}`;
+    if (meta) meta.textContent = `${file.name} · ${formatFileSize(file.size)}`;
     document.getElementById('receipts-scan-btn')?.removeAttribute('disabled');
     document.getElementById('receipts-status').textContent = '';
 }
@@ -2749,7 +2749,7 @@ function renderReceiptsScanResult(result) {
     if (matchBanner) {
         if (matched) {
             matchBanner.className = 'receipts-match-banner receipts-match-banner--ok';
-            matchBanner.innerHTML = `<i class="fa-solid fa-circle-check"></i> Matched to transaction ? ${escapeHtml(matched.merchant_name || '')} ? ${moneyTick(matched.amount_cad)} ? ${escapeHtml(matched.transaction_date || '')}`;
+            matchBanner.innerHTML = `<i class="fa-solid fa-circle-check"></i> Matched to transaction · ${escapeHtml(matched.merchant_name || '')} · ${moneyTick(matched.amount_cad)} · ${escapeHtml(matched.transaction_date || '')}`;
         } else {
             matchBanner.className = 'receipts-match-banner receipts-match-banner--info';
             matchBanner.innerHTML = '<i class="fa-solid fa-circle-info"></i> No card transaction matched ? review the details below and save if they look correct';
@@ -2852,8 +2852,8 @@ async function loadReceiptsHistory() {
                 <strong>${escapeHtml(d.merchant || 'Receipt')}</strong>
                 <span class="receipts-purpose-tag receipts-purpose-tag--${escapeHtml(r.spending_purpose || d.spending_purpose || 'project')}">${escapeHtml(purpose)}</span>
                 ${projectLine}
-                <span>${escapeHtml(d.date || '')} ? ${escapeHtml(formatCad(d.amount))}</span>
-                <span class="receipts-history-meta">${escapeHtml(r.employee_name || '')} ? ${escapeHtml(r.confirmed_at || '')}</span>
+                <span>${escapeHtml(d.date || '')} · ${escapeHtml(formatCad(d.amount))}</span>
+                <span class="receipts-history-meta">${escapeHtml(r.employee_name || '')} · ${escapeHtml(r.confirmed_at || '')}</span>
             </div>`;
         }).join('');
     } catch (err) {
@@ -2989,7 +2989,7 @@ function updateCompareUI() {
         chips.innerHTML = names.length
             ? names.map((n) => `
                 <span class="compare-chip">${n.split(' ')[0]}
-                    <button type="button" data-remove-compare="${n}" aria-label="Remove">?</button>
+                    <button type="button" data-remove-compare="${n}" aria-label="Remove">×</button>
                 </span>`).join('')
             : '<span class="compare-label" style="font-weight:500;text-transform:none">Select people to compare</span>';
     }
@@ -3025,7 +3025,7 @@ async function openEmployeeModal(name) {
         if (!res.ok) throw new Error(data.error || 'Failed to load employee');
 
         document.getElementById('modal-employee-meta').textContent =
-            `${data.employee_id} ? ${escapeHtml(data.department || '?')} ? Credit score ${formatCreditScore(data.credit_score)}`;
+            `${data.employee_id} · ${escapeHtml(data.department || '?')} · Credit score ${formatCreditScore(data.credit_score)}`;
         document.getElementById('modal-stats').innerHTML = `
             <div class="modal-stat"><span>Total</span><strong>${data.total_spend_fmt}</strong></div>
             <div class="modal-stat"><span>Txns</span><strong>${data.transaction_count}</strong></div>
@@ -3669,7 +3669,7 @@ function renderCityMarkers(locations, map) {
             content: `
                 <div class="map-info">
                     <strong>${escapeHtml(loc.location)}</strong>
-                    <div>${merchantCount} merchants ? ${loc.transactions} transactions</div>
+                    <div>${merchantCount} merchants · ${loc.transactions} transactions</div>
                     <div>${escapeHtml(loc.spend_fmt)} total spend</div>
                     ${loc.flagged ? `<div class="map-info-flag">${loc.flagged} flagged</div>` : ''}
                     <div class="map-info-team">${escapeHtml(loc.employees.slice(0, 4).join(', '))}${loc.employees.length > 4 ? '?' : ''}</div>
@@ -3711,10 +3711,10 @@ function renderMerchantMarkers(merchants, map) {
             content: `
                 <div class="map-info">
                     <strong>${escapeHtml(item.vendor)}</strong>
-                    <div>${escapeHtml(item.employee || '')}${item.department ? ` ? ${escapeHtml(item.department)}` : ''}</div>
+                    <div>${escapeHtml(item.employee || '')}${item.department ? ` · ${escapeHtml(item.department)}` : ''}</div>
                     ${item.street_address ? `<div>${escapeHtml(item.street_address)}</div>` : ''}
-                    <div>${escapeHtml(item.location)}${item.postal ? ` ? ${escapeHtml(item.postal)}` : ''}</div>
-                    <div>${escapeHtml(item.spend_fmt)} ? ${escapeHtml(item.date || '')}</div>
+                    <div>${escapeHtml(item.location)}${item.postal ? ` · ${escapeHtml(item.postal)}` : ''}</div>
+                    <div>${escapeHtml(item.spend_fmt)} · ${escapeHtml(item.date || '')}</div>
                     ${item.flagged ? `<div class="map-info-flag">Flagged purchase</div>` : ''}
                 </div>`,
         });
@@ -3761,7 +3761,7 @@ function updateMapSummary(data, merchantMode) {
 
     if (merchantMode) {
         summaryEl.textContent =
-            `${data.plotted} purchases in view ? ${data.total_in_view} total here ? ${data.total_merchants} mapped purchases`;
+            `${data.plotted} purchases in view · ${data.total_in_view} total here · ${data.total_merchants} mapped purchases`;
         if (noteEl) {
             noteEl.textContent = 'Each circle is one purchase at its merchant street address. Red = flagged. More addresses geocode as you explore the map.';
         }
@@ -3769,7 +3769,7 @@ function updateMapSummary(data, merchantMode) {
     }
 
     summaryEl.textContent =
-        `${data.plotted} areas ? ${data.mapped_spend_fmt} mapped spend ? ${data.total_locations} locations in data`;
+        `${data.plotted} areas · ${data.mapped_spend_fmt} mapped spend · ${data.total_locations} locations in data`;
     if (noteEl) {
         noteEl.textContent = 'Zoom in to see a circle for each purchase at its street address from the CSV.';
     }

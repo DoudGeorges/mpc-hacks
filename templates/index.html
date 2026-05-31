@@ -402,7 +402,7 @@
 
 
 
-                <div class="sidebar-user-avatar">{{ (current_user.display_name or '?')[:2]|upper }}</div>
+                <div class="sidebar-user-avatar">{{ (current_user.display_name or 'CF')[:2]|upper }}</div>
 
 
 
@@ -1549,7 +1549,7 @@
 
 
 
-                                <input type="file" id="receipts-file-input" accept="image/*,application/pdf" hidden>
+                                <input type="file" id="receipts-file-input" accept="image/*,application/pdf" capture="environment" hidden>
 
 
 
@@ -2937,7 +2937,7 @@
 
 
 
-                                    <input type="file" id="receipt-input" accept="image/*,application/pdf" hidden>
+                                    <input type="file" id="receipt-input" accept="image/*,application/pdf" capture="environment" hidden>
 
 
 
