@@ -63,7 +63,7 @@ def _flag_item(raw: dict) -> dict:
     location = sanitize_display_text(str(raw.get("location") or "").strip())
     flag_types = raw.get("flag_types") or [flag_type]
     context = []
-    for part in reason.split(" · "):
+    for part in reason.split(" — "):
         part = part.strip()
         if part:
             context.append(sanitize_display_text(part))

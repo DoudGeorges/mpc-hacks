@@ -749,11 +749,11 @@ def build_gemini_context(user_message: str, conversation_history=None, employee_
                     lines += [
                         "",
                         f"BUDGET DETAIL — {dept.upper()}:",
-                        f"  Cap: {info['budget_fmt']} · Spent: {info['spent_fmt']} · "
+                        f"  Cap: {info['budget_fmt']} — Spent: {info['spent_fmt']} — "
                         f"Remaining: {info['remaining_fmt']}",
                         f"  Source: {'custom (Settings)' if info['is_custom'] else 'suggested cap'}",
                         f"  Forecast: {fc['message']}",
-                        f"  Weekly burn: {fc['weekly_burn_fmt']} · "
+                        f"  Weekly burn: {fc['weekly_burn_fmt']} — "
                         f"{fc['pct_used']}% of cap used",
                     ]
             fc = get_forecast_for_query(user_message)
@@ -762,7 +762,7 @@ def build_gemini_context(user_message: str, conversation_history=None, employee_
                     "",
                     "BUDGET FORECAST:",
                     f"  {fc['message']}",
-                    f"  Weekly burn: {fc['weekly_burn_fmt']} · Week {fc['current_week']} of {fc['weeks_in_quarter']}",
+                    f"  Weekly burn: {fc['weekly_burn_fmt']} — Week {fc['current_week']} of {fc['weeks_in_quarter']}",
                     f"  Spent: {fc['spent_fmt']} / {fc['budget_fmt']} cap ({fc['pct_used']}% used)",
                 ]
         elif not employee_name:

@@ -429,16 +429,16 @@ def build_receipt_card(result: dict) -> dict:
 
     if matched:
         footer = (
-            f"Matched to card transaction · {_fmt_money(matched.get('amount_cad'))} · "
+            f"Matched to card transaction — {_fmt_money(matched.get('amount_cad'))} — "
             f"{_fmt_date(matched.get('transaction_date'))}"
         )
     else:
         footer = "No card transaction matched. Save this receipt if the details look correct."
 
     if violations:
-        footer += f" · {len(violations)} compliance note(s)"
+        footer += f" — {len(violations)} compliance note(s)"
         if any(v.get("type") == "non_business_expense" for v in violations):
-            footer += " · flagged as non-business"
+            footer += " — flagged as non-business"
 
     dining = is_dining_receipt(ext, matched)
 

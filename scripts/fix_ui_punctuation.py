@@ -1,10 +1,10 @@
-"""Restore corrupted UI punctuation (? placeholders -> ·, —, …, ×)."""
+"""Restore corrupted UI punctuation (? placeholders -> —, …, ×)."""
 from __future__ import annotations
 
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-MID = "\u00b7"  # ·
+MID = "\u2014"  # — (use em dash; middle dot renders as ? on some deployments)
 EM = "\u2014"  # —
 ELL = "\u2026"  # …
 REPL = "\ufffd"  # replacement char from bad encoding

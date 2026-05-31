@@ -406,7 +406,7 @@ def _comparison_insight(ctx: SpendingContext, rows, scoped) -> dict:
         scope_bits.append(ctx.category)
     if ctx.quarter:
         scope_bits.append(ctx.quarter)
-    scope_label = " · ".join(scope_bits) if scope_bits else "all time"
+    scope_label = " — ".join(scope_bits) if scope_bits else "all time"
 
     higher = dept_a if diff >= 0 else dept_b
     summary = (
@@ -640,7 +640,7 @@ def _forecast_insight(message, history) -> dict | None:
         return {
             "title": f"Budget forecast — {fc['department']}",
             "summary": (
-                f"**{fc['message']}** Weekly burn: **{fc['weekly_burn_fmt']}** · "
+                f"**{fc['message']}** Weekly burn: **{fc['weekly_burn_fmt']}** — "
                 f"{fc['spent_fmt']} of {fc['budget_fmt']} cap used ({chart_data['quarter']})."
             ),
             "chart": {

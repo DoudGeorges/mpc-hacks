@@ -145,9 +145,9 @@ def _employee_section(story, styles, employee):
     story.append(Paragraph(employee["name"], styles["heading"]))
     meta = (
         f"Employee ID: {employee['employee_id']}<br/>"
-        f"Total spend: {employee['total_spend_fmt']} · "
-        f"Transactions: {employee['transaction_count']} · "
-        f"Flagged: {employee['flagged_count']} · "
+        f"Total spend: {employee['total_spend_fmt']} — "
+        f"Transactions: {employee['transaction_count']} — "
+        f"Flagged: {employee['flagged_count']} — "
         f"Credit score: {employee['credit_score']}"
     )
     story.append(Paragraph(meta, styles["body"]))
@@ -211,7 +211,7 @@ def build_spending_pdf(names):
     story.append(Paragraph(title, styles["title"]))
     story.append(
         Paragraph(
-            f"Generated {datetime.now().strftime('%B %d, %Y at %I:%M %p')} · Source: {CSV_NAME}",
+            f"Generated {datetime.now().strftime('%B %d, %Y at %I:%M %p')} — Source: {CSV_NAME}",
             styles["small"],
         )
     )

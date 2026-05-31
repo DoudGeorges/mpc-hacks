@@ -175,7 +175,7 @@ def _merge_flag_records(existing: dict, incoming: dict) -> dict:
         reason = str(src.get("reason") or "").strip()
         if reason and reason not in reasons:
             reasons.append(reason)
-    merged["reason"] = " · ".join(reasons)
+    merged["reason"] = " — ".join(reasons)
 
     risk_order = {"Severe": 4, "High": 3, "Medium": 2, "Low": 1}
     merged["risk"] = max(

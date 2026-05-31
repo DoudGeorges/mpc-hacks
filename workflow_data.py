@@ -85,7 +85,7 @@ def build_ai_recommendation(
 
     context = [
         f"{fmt_money(remaining)} remaining in {_current_quarter_label()} dept budget ({dept})",
-        f"Credit score {score:.1f}/100 · {flagged_count} prior flagged transaction(s)",
+        f"Credit score {score:.1f}/100 — {flagged_count} prior flagged transaction(s)",
         f"Attended {conferences} conference/travel event(s) this period",
     ]
 
@@ -392,8 +392,8 @@ def build_trip_report_recommendation(report: dict) -> tuple[str, str, list[str]]
 
     context = [
         f"{fmt_money(remaining)} remaining in {_current_quarter_label()} dept budget ({dept})",
-        f"{txs} transactions grouped · {report.get('date_range', '')}",
-        f"Credit score {score:.1f}/100 · {conferences} conference(s) this period",
+        f"{txs} transactions grouped — {report.get('date_range', '')}",
+        f"Credit score {score:.1f}/100 — {conferences} conference(s) this period",
     ]
     if violations:
         context.append(f"{len(violations)} automated policy issue(s) in this report")

@@ -83,7 +83,7 @@ def get_site_snapshot(current_view: str | None = None) -> dict:
     ]
 
     flag_lines = [
-        f"{f.get('employee', '?')} · {f.get('vendor', '?')} · {f.get('amount', '')}"
+        f"{f.get('employee', '?')} — {f.get('vendor', '?')} — {f.get('amount', '')}"
         for f in flags[:6]
     ]
 
@@ -132,8 +132,8 @@ def build_voice_context_block(current_view: str | None = None) -> str:
     lines += [
         "",
         "LIVE COUNTS:",
-        f"  - {c['transactions']} purchases · {c['employees']} employees",
-        f"  - {c['flags']} flagged purchases · {c['approvals_pending']} pending approvals",
+        f"  - {c['transactions']} purchases — {c['employees']} employees",
+        f"  - {c['flags']} flagged purchases — {c['approvals_pending']} pending approvals",
         f"  - {c['reports_pending']} trip reports awaiting CFO",
         "",
         f"TOTAL SPEND: {snap['totals']['spend_fmt']} ({snap['totals']['flagged_count']} flagged, {snap['totals']['flagged_fmt']})",
